@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumor Classification - AIMS Senegal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Red Header Bar -->
+    <div class="bg-red-600 text-white p-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="/static/images/logo.jpeg" alt="AIMS Senegal" class="h-10 mr-2">
+            <h1 class="text-xl font-bold">Brain Tumor Classification</h1>
+        </div>
+        <span class="text-lg font-semibold">Victor Model</span>
+    </div>
+
+    <!-- Welcome Section -->
+
+    <div class="container mx-auto p-6 mt-6">
+        <h3 class="display-6 text-3xl font-bold text-center text-gray-800 mb-4">Welcome to AIMS Brain Tumor Classification Web App Project</h3>
+        <p class="text-gray-700 text-lg leading-relaxed mb-4">
+            <p class="text-gray-700 text-lg leading-relaxed mb-4">
+            This web-based Brain Tumor Classification project was developed by Victor Mbuyi Bidikuchance, a co-op student at AIMS Senegal, as part of the Computer Vision course. The application leverages machine learning to classify brain tumors into four categories: glioma, meningioma, notumor, and pituitary. The project integrates pre-trained deep learning models—ResNet18 (PyTorch) and VGG16 (TensorFlow)—to process uploaded images and predict tumor types. All functionalities are seamlessly integrated within a Flask web application.
+        </p>
+        <p class="text-gray-700 text-lg leading-relaxed mb-4">
+            <strong>Process and Architecture:</strong><br>
+            1. <strong>Data Preparation:</strong> Images are organized into training and testing datasets with four class labels, preprocessed using resizing (224x224 pixels) and normalization.<br>
+            2. <strong>Model Architecture:</strong> The system uses transfer learning with ResNet18 (18-layer residual network) or VGG16 (16-layer convolutional network), fine-tuning the final fully connected layer for 4-class classification. Both models are pre-trained on ImageNet.<br>
+            3. <strong>Image Processing:</strong> Upon upload, the image is resized, normalized, and fed into the selected model. For ResNet18, it uses PyTorch transforms; for VGG16, it applies TensorFlow preprocessing.<br>
+            4. <strong>Prediction:</strong> The model outputs a probability distribution, and the class with the highest score is predicted.<br>
+            5. <strong>Web Integration:</strong> Flask handles HTTP requests, renders the interface, and displays predictions and metrics (accuracy, recall, F1-score) computed on the test set.
+        </p>   </p>
+        <div class="flex justify-center mb-4">
+            <img src="/static/images/icon.png" class="rounded-lg shadow-md" style="max-height: 300px;" alt="AIMS Senegal Icon">
+        </div>
+        <p class="text-center text-gray-700 text-lg font-semibold">AIMS SENEGAL THE BEST !!! LET'S FOLLOW THE STEPS</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-6 flex justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl space-y-6">
+            <h2 class="text-2xl font-bold text-center text-gray-800">Upload and Classify</h2>
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                <div>
+                    <label for="model" class="block text-sm font-medium text-gray-700">Select Model</label>
+                    <select name="model" id="model" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="pytorch">PyTorch</option>
+                        <option value="tensorflow">TensorFlow</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700">Upload Image</label>
+                    <input type="file" name="image" id="image" accept="image/*" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+                </div>
+                <button type="submit" class="w-full bg-red-600 text-white p-3 rounded-md hover:bg-red-700 transition duration-200">Classify</button>
+            </form>
+            {% if prediction %}
+            <div class="mt-6 space-y-4">
+                <div class="p-4 bg-green-100 rounded-md">
+                    <p class="text-lg font-semibold text-green-800">Predicted Class: <span class="text-green-600">{{ prediction }}</span></p>
+                </div>
+                {% if image_data %}
+                <div class="flex justify-center">
+                    <img src="data:image/jpeg;base64,{{ image_data }}" alt="Uploaded Image" class="max-w-xs rounded-md shadow-md">
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="mt-6">
+                <h2 class="text-xl font-semibold text-gray-800">Model Metrics</h2>
+                <div class="mt-2">
+                    <p class="text-gray-700">PyTorch:</p>
+                    <ul class="list-disc list-inside text-gray-600">
+                        <li>Accuracy: {{ (pytorch_metrics.accuracy * 100) | round(2) }}%</li>
+                        <li>Recall: {{ (pytorch_metrics.recall * 100) | round(2) }}%</li>
+                        <li>F1-Score: {{ (pytorch_metrics.f1 * 100) | round(2) }}%</li>
+                    </ul>
+                </div>
+                <div class="mt-2">
+                    <p class="text-gray-700">TensorFlow:</p>
+                    <ul class="list-disc list-inside text-gray-600">
+                        <li>Accuracy: {{ (tf_metrics.accuracy * 100) | round(2) }}%</li>
+                        <li>Recall: {{ (tf_metrics.recall * 100) | round(2) }}%</li>
+                        <li>F1-Score: {{ (tf_metrics.f1 * 100) | round(2) }}%</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
